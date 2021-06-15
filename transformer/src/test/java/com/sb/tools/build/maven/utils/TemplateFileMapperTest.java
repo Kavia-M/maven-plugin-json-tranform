@@ -2,7 +2,9 @@ package com.sb.tools.build.maven.utils;
 
 import com.sb.tools.build.maven.BaseTransformerTest;
 import com.sb.tools.build.maven.exceptions.TemplateMissingException;
+import com.sb.tools.build.maven.model.TemplateInfo;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -17,14 +19,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
+import static com.sb.tools.build.maven.utils.TemplateFileMapper.TARGET_OVERRIDE_DIR;
 import static com.sb.tools.build.maven.utils.TemplateFileMapper.TARGET_TEMPLATE_DIR;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore("jdk.internal.reflect.*")
 @PrepareForTest(TemplateFileMapper.class)
 public class TemplateFileMapperTest extends BaseTransformerTest {
+
+    TemplateFileMapper templateFileMapper;
+
+    @Before
+    public void setup(){
+        templateFileMapper = new TemplateFileMapper();
+    }
 
     @Test
     public void emptyDirShouldDefaultToProjectDirectory() throws Exception {
@@ -38,7 +48,7 @@ public class TemplateFileMapperTest extends BaseTransformerTest {
             Path targetDir = baseDir.resolve(TARGET_TEMPLATE_DIR);
 
             TemplateMissingException templateMissingException = Assert.assertThrows(TemplateMissingException.class, () -> {
-                TemplateFileMapper.findTemplateFiles(null);
+                templateFileMapper.findTemplateFiles();
             });
 
             Assert.assertEquals("Error.TemplateNotFound", templateMissingException.getCode());
@@ -50,13 +60,29 @@ public class TemplateFileMapperTest extends BaseTransformerTest {
         Path baseDir = Paths.get(System.getProperty("user.dir"));
         Path targetDir = baseDir.resolve("src/test/resources");
 
-        List<File> expectedFiles = Files.list(targetDir.resolve(TARGET_TEMPLATE_DIR))
-                .map(Path::toFile)
-                .filter(f -> f.isFile() && f.getName().endsWith("-iag-template.json"))
-                .collect(Collectors.toList());
+        TemplateInfo templateInfo = TemplateInfo.builder()
+                .name("dummy-iag-template.json")
+                .templateFile(new File(targetDir.resolve(TARGET_TEMPLATE_DIR).resolve("dummy-iag-template.json").toString()))
+                .overrideFile(Optional.of(new File(targetDir.resolve(TARGET_OVERRIDE_DIR).resolve("dummy-override-iag-template.json").toString())))
+                .build();
 
-        List<File> actualFiles = TemplateFileMapper.findTemplateFiles(targetDir.toString());
+        TemplateInfo refdataTemplateInfo = TemplateInfo.builder()
+                .name("dummy-refdata-iag-template.json")
+                .templateFile(new File(targetDir.resolve(TARGET_TEMPLATE_DIR).resolve("dummy-refdata-iag-template.json").toString()))
+                .overrideFile(Optional.of(new File(targetDir.resolve(TARGET_OVERRIDE_DIR).resolve("dummy-refdata-override-iag-template.json").toString())))
+                .build();
 
-        Assert.assertEquals(expectedFiles, actualFiles);
+        TemplateInfo dummy2TemplateInfo = TemplateInfo.builder()
+                .name("dummy2-iag-template.json")
+                .templateFile(new File(targetDir.resolve(TARGET_TEMPLATE_DIR).resolve("dummy2-iag-template.json").toString()))
+                .overrideFile(Optional.empty())
+                .build();
+
+        List<TemplateInfo> actualFiles = templateFileMapper.findTemplateFiles(targetDir.toString());
+
+        Assert.assertTrue(actualFiles.size() == 3);
+        Assert.assertEquals(templateInfo, actualFiles.get(0));
+        Assert.assertEquals(refdataTemplateInfo, actualFiles.get(1));
+        Assert.assertEquals(dummy2TemplateInfo, actualFiles.get(2));
     }
 }

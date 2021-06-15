@@ -9,6 +9,7 @@ import java.util.Optional;
 @Data
 @Builder
 public class TemplateInfo {
+    private String name;
     private File templateFile;
     private Optional<File> overrideFile;
 }

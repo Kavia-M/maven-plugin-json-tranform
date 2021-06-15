@@ -39,43 +39,44 @@ public class TemplateFileMapper {
 
     public List<TemplateInfo> findTemplateFiles(String dir, String templatePattern) throws TemplateMissingException {
         log.info("No override pattern provided defaulting to {}", "-iag-template.json");
-        return findTemplateFiles(dir, templatePattern, "override-iag-template.json");
+        return findTemplateFiles(dir, templatePattern, "-override-iag-template.json");
     }
 
     private List<TemplateInfo> findFiles(Path targetPath, String templatePattern, String overridePattern) throws TemplateMissingException {
+        Path templatePath = targetPath.resolve(TARGET_TEMPLATE_DIR);
         log.info("Processing target {}", targetPath);
 
         try {
-            List<TemplateInfo> files = Files.list(targetPath.resolve(TARGET_TEMPLATE_DIR))
+            List<TemplateInfo> files = Files.list(templatePath)
                     .map(Path::toFile)
                     .filter(f -> f.isFile() && f.getName().endsWith(templatePattern))
                     .map(f -> {
                         String templateToken = f.getName()
-                                .substring(f.getName().length() - templatePattern.length(), f.getName().length());
+                                .substring(0, f.getName().length() - templatePattern.length());
                         Optional<File> overrideFile = null;
                         try {
-                            overrideFile = Files.list(targetPath.resolve(templateToken + TARGET_OVERRIDE_DIR))
+                            overrideFile = Files.list(targetPath.resolve(TARGET_OVERRIDE_DIR))
                                     .map(Path::toFile)
-                                    .filter(of -> of.isFile() && of.getName().endsWith(overridePattern))
+                                    .filter(of -> of.isFile() && of.getName().endsWith(templateToken + overridePattern))
                                     .findFirst();
 
                         } catch (IOException e) {
                             log.error("IOException in processing template {} and override {}",
                                     f.getName(), templateToken + TARGET_OVERRIDE_DIR);
                         }
-                        return TemplateInfo.builder().templateFile(f).overrideFile(overrideFile).build();
+                        return TemplateInfo.builder().name(f.getName()).templateFile(f).overrideFile(overrideFile).build();
                     })
                     .collect(Collectors.toList());
 
             if (files.size() == 0)
-                throw new TemplateMissingException("Error.TemplateNotFound", String.format("No template found at %s", targetPath));
+                throw new TemplateMissingException("Error.TemplateNotFound", String.format("No template found at %s", templatePath));
 
             files.forEach(f -> log.info("found template {} and override {]", f.getTemplateFile(), f.getOverrideFile()));
             return files;
         } catch (IOException e) {
-            log.error("Error while reading the directory {} due to following error {}", targetPath, e.getMessage());
+            log.error("Error while reading the directory {} due to following error {}", templatePath, e.getMessage());
             throw new TemplateMissingException("Error.IOException",
-                    String.format("Error while reading the directory %s due to following error %s", targetPath, e.getMessage()));
+                    String.format("Error while reading the directory %s due to following error %s", templatePath, e.getMessage()));
         }
     }
 }
