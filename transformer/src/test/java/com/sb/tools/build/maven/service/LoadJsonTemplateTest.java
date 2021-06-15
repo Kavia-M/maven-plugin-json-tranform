@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.sb.tools.build.maven.utils.TemplateFileIOHelper.TARGET_DIR;
+import static com.sb.tools.build.maven.utils.TemplateFileMapper.TARGET_TEMPLATE_DIR;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LoadJsonTemplateTest extends BaseTransformerTest {
@@ -38,7 +38,7 @@ public class LoadJsonTemplateTest extends BaseTransformerTest {
         Path baseDir = Paths.get(System.getProperty("user.dir"));
         Path targetDir = baseDir.resolve("src/test/resources");
 
-        List<File> expectedFiles = Files.list(targetDir.resolve(TARGET_DIR))
+        List<File> expectedFiles = Files.list(targetDir.resolve(TARGET_TEMPLATE_DIR))
                 .map(Path::toFile)
                 .filter(f -> f.isFile() && f.getName().endsWith("-iag-template.json"))
                 .collect(Collectors.toList());

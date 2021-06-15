@@ -7,12 +7,16 @@ import com.sb.tools.build.maven.exceptions.JsonTemplateLoadException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ObjectUtils;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
 @Slf4j
+@Named
+@Singleton
 public class LoadJsonTemplate implements LoadTemplate {
 
     @Override

@@ -19,12 +19,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.sb.tools.build.maven.utils.TemplateFileIOHelper.TARGET_DIR;
+import static com.sb.tools.build.maven.utils.TemplateFileMapper.TARGET_TEMPLATE_DIR;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore("jdk.internal.reflect.*")
-@PrepareForTest(TemplateFileIOHelper.class)
-public class FileHelperTest extends BaseTransformerTest {
+@PrepareForTest(TemplateFileMapper.class)
+public class TemplateFileMapperTest extends BaseTransformerTest {
 
     @Test
     public void emptyDirShouldDefaultToProjectDirectory() throws Exception {
@@ -35,10 +35,10 @@ public class FileHelperTest extends BaseTransformerTest {
             PowerMockito.when(Files.list(Mockito.any())).thenReturn(Arrays.asList(Paths.get("dummy-iag-template.json")).stream());
 
             Path baseDir = Paths.get(System.getProperty("user.dir"));
-            Path targetDir = baseDir.resolve(TARGET_DIR);
+            Path targetDir = baseDir.resolve(TARGET_TEMPLATE_DIR);
 
             TemplateMissingException templateMissingException = Assert.assertThrows(TemplateMissingException.class, () -> {
-                TemplateFileIOHelper.findTemplateFiles(null);
+                TemplateFileMapper.findTemplateFiles(null);
             });
 
             Assert.assertEquals("Error.TemplateNotFound", templateMissingException.getCode());
@@ -50,12 +50,12 @@ public class FileHelperTest extends BaseTransformerTest {
         Path baseDir = Paths.get(System.getProperty("user.dir"));
         Path targetDir = baseDir.resolve("src/test/resources");
 
-        List<File> expectedFiles = Files.list(targetDir.resolve(TARGET_DIR))
+        List<File> expectedFiles = Files.list(targetDir.resolve(TARGET_TEMPLATE_DIR))
                 .map(Path::toFile)
                 .filter(f -> f.isFile() && f.getName().endsWith("-iag-template.json"))
                 .collect(Collectors.toList());
 
-        List<File> actualFiles = TemplateFileIOHelper.findTemplateFiles(targetDir.toString());
+        List<File> actualFiles = TemplateFileMapper.findTemplateFiles(targetDir.toString());
 
         Assert.assertEquals(expectedFiles, actualFiles);
     }
