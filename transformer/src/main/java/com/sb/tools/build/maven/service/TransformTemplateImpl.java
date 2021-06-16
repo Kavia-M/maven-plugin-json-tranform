@@ -6,18 +6,9 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
-import javax.inject.Inject;
-
 @Slf4j
 @Mojo(name="transform", defaultPhase = LifecyclePhase.INSTALL)
 public class TransformTemplateImpl extends TransformTemplate {
-
-    private final LoadTemplate loadTemplate;
-
-    @Inject
-    public TransformTemplateImpl(LoadTemplate loadTemplate) {
-        this.loadTemplate = loadTemplate;
-    }
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {

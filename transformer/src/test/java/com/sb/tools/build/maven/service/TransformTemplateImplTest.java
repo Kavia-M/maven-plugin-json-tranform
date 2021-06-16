@@ -1,14 +1,11 @@
 package com.sb.tools.build.maven.service;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 import com.sb.tools.build.maven.BaseTransformerTest;
 import com.sb.tools.build.maven.exceptions.TransformMavenPluginException;
 import com.sb.tools.build.maven.utils.TemplateFileMapper;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,16 +15,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.sb.tools.build.maven.utils.TemplateFileMapper.TARGET_TEMPLATE_DIR;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore("jdk.internal.reflect.*")
@@ -41,7 +29,7 @@ public class TransformTemplateImplTest extends BaseTransformerTest {
 
     @Before
     public void setup() throws IOException {
-        transformTemplate = new TransformTemplateImpl(loadTemplate);
+/*        transformTemplate = new TransformTemplateImpl();
         Path baseDir = Paths.get(System.getProperty("user.dir"));
         Path targetDir = baseDir.resolve("src/test/resources");
 
@@ -54,7 +42,7 @@ public class TransformTemplateImplTest extends BaseTransformerTest {
         File file = expectedFiles.get(0);
         try (FileReader fileReader = new FileReader(file)) {
             templateJson = JsonParser.parseReader(new JsonReader(fileReader));
-        }
+        }*/
     }
 
     @Test
