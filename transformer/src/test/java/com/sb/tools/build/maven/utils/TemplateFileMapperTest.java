@@ -19,7 +19,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static com.sb.tools.build.maven.utils.TemplateFileMapper.TARGET_OVERRIDE_DIR;
 import static com.sb.tools.build.maven.utils.TemplateFileMapper.TARGET_TEMPLATE_DIR;
@@ -63,19 +62,19 @@ public class TemplateFileMapperTest extends BaseTransformerTest {
         TemplateInfo templateInfo = TemplateInfo.builder()
                 .name("dummy-iag-template.json")
                 .templateFile(new File(targetDir.resolve(TARGET_TEMPLATE_DIR).resolve("dummy-iag-template.json").toString()))
-                .overrideFile(Optional.of(new File(targetDir.resolve(TARGET_OVERRIDE_DIR).resolve("dummy-override-iag-template.json").toString())))
+                .overrideFile(new File(targetDir.resolve(TARGET_OVERRIDE_DIR).resolve("dummy-override-iag-template.json").toString()))
                 .build();
 
         TemplateInfo refdataTemplateInfo = TemplateInfo.builder()
                 .name("dummy-refdata-iag-template.json")
                 .templateFile(new File(targetDir.resolve(TARGET_TEMPLATE_DIR).resolve("dummy-refdata-iag-template.json").toString()))
-                .overrideFile(Optional.of(new File(targetDir.resolve(TARGET_OVERRIDE_DIR).resolve("dummy-refdata-override-iag-template.json").toString())))
+                .overrideFile(new File(targetDir.resolve(TARGET_OVERRIDE_DIR).resolve("dummy-refdata-override-iag-template.json").toString()))
                 .build();
 
         TemplateInfo dummy2TemplateInfo = TemplateInfo.builder()
                 .name("dummy2-iag-template.json")
                 .templateFile(new File(targetDir.resolve(TARGET_TEMPLATE_DIR).resolve("dummy2-iag-template.json").toString()))
-                .overrideFile(Optional.empty())
+                .overrideFile(null)
                 .build();
 
         List<TemplateInfo> actualFiles = templateFileMapper.findTemplateFiles(targetDir.toString());

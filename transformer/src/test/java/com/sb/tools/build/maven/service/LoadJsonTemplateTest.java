@@ -43,7 +43,7 @@ public class LoadJsonTemplateTest extends BaseTransformerTest {
                 .filter(f -> f.isFile() && f.getName().endsWith("-iag-template.json"))
                 .collect(Collectors.toList());
 
-        Assert.assertTrue(expectedFiles.size() == 1);
+        Assert.assertTrue(expectedFiles.size() > 1);
         JsonElement actualResult = (JsonElement)loadTemplate.load(expectedFiles.get(0));
         Assert.assertTrue(actualResult != null);
     }

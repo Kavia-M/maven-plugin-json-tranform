@@ -53,7 +53,7 @@ public class TemplateFileMapper {
                     .map(f -> {
                         String templateToken = f.getName()
                                 .substring(0, f.getName().length() - templatePattern.length());
-                        Optional<File> overrideFile = null;
+                        Optional<File> overrideFile = Optional.empty();
                         try {
                             overrideFile = Files.list(targetPath.resolve(TARGET_OVERRIDE_DIR))
                                     .map(Path::toFile)
@@ -64,7 +64,12 @@ public class TemplateFileMapper {
                             log.error("IOException in processing template {} and override {}",
                                     f.getName(), templateToken + TARGET_OVERRIDE_DIR);
                         }
-                        return TemplateInfo.builder().name(f.getName()).templateFile(f).overrideFile(overrideFile).build();
+
+                        return TemplateInfo.builder()
+                                .name(f.getName())
+                                .templateFile(f)
+                                .overrideFile(overrideFile.isPresent() ? overrideFile.get() : null)
+                                .build();
                     })
                     .collect(Collectors.toList());
 
