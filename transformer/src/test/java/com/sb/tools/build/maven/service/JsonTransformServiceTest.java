@@ -9,8 +9,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TransformServiceImplTest {
-
+public class JsonTransformServiceTest {
     private LoadTemplate loadTemplate;
     private TemplateFileMapper templateFileMapper;
     private TransformService transformService;
@@ -20,7 +19,7 @@ public class TransformServiceImplTest {
         loadTemplate = Mockito.mock(LoadTemplate.class);
         templateFileMapper = Mockito.mock(TemplateFileMapper.class);
 
-        transformService = new TransformServiceImpl(loadTemplate, templateFileMapper);
+        transformService = new JsonTransformService(loadTemplate, templateFileMapper);
     }
 
     @Test
