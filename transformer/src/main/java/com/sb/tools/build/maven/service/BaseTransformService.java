@@ -15,8 +15,8 @@ public abstract class BaseTransformService implements TransformService {
         persistTemplates(transformTemplates(loadTemplates(getTemplatesForTransformation())));
     }
 
-    public abstract List<TemplateInfo> getTemplatesForTransformation() throws TemplateMissingException;
-    public abstract List<TemplateInfo> loadTemplates(List<TemplateInfo> templates);
-    public abstract List<TemplateInfo> transformTemplates(List<TemplateInfo> templates);
-    public abstract List<TemplateInfo> persistTemplates(List<TemplateInfo> templates);
+    public abstract List<? extends TemplateInfo> getTemplatesForTransformation() throws TemplateMissingException;
+    public abstract List<? extends TemplateInfo> loadTemplates(List<? extends TemplateInfo> templates);
+    public abstract List<? extends TemplateInfo> transformTemplates(List<? extends TemplateInfo> templates);
+    public abstract List<? extends TemplateInfo> persistTemplates(List<? extends TemplateInfo> templates);
 }
