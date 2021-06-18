@@ -20,8 +20,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.sb.tools.build.maven.utils.TemplateFileMapper.TARGET_OVERRIDE_DIR;
-import static com.sb.tools.build.maven.utils.TemplateFileMapper.TARGET_TEMPLATE_DIR;
+import static com.sb.tools.build.maven.utils.TemplateFileMapper.*;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore("jdk.internal.reflect.*")
@@ -63,23 +62,26 @@ public class TemplateFileMapperTest extends BaseTransformerTest {
                 .name("dummy-iag-template.json")
                 .templateFile(new File(targetDir.resolve(TARGET_TEMPLATE_DIR).resolve("dummy-iag-template.json").toString()))
                 .overrideFile(new File(targetDir.resolve(TARGET_OVERRIDE_DIR).resolve("dummy-override-iag-template.json").toString()))
+                .resultFile(targetDir.resolve(TARGET_RESULT_DIR).resolve("dummy-iag-template.json"))
                 .build();
 
         TemplateInfo refdataTemplateInfo = TemplateInfo.builder()
                 .name("dummy-refdata-iag-template.json")
                 .templateFile(new File(targetDir.resolve(TARGET_TEMPLATE_DIR).resolve("dummy-refdata-iag-template.json").toString()))
                 .overrideFile(new File(targetDir.resolve(TARGET_OVERRIDE_DIR).resolve("dummy-refdata-override-iag-template.json").toString()))
+                .resultFile(targetDir.resolve(TARGET_RESULT_DIR).resolve("dummy-refdata-iag-template.json"))
                 .build();
 
         TemplateInfo dummy2TemplateInfo = TemplateInfo.builder()
                 .name("dummy2-iag-template.json")
                 .templateFile(new File(targetDir.resolve(TARGET_TEMPLATE_DIR).resolve("dummy2-iag-template.json").toString()))
+                .resultFile(targetDir.resolve(TARGET_RESULT_DIR).resolve("dummy2-iag-template.json"))
                 .overrideFile(null)
                 .build();
 
         List<TemplateInfo> actualFiles = templateFileMapper.findTemplateFiles(targetDir.toString());
 
-        Assert.assertTrue(actualFiles.size() == 3);
+        Assert.assertTrue(actualFiles.size() == 4);
         Assert.assertEquals(templateInfo, actualFiles.get(0));
         Assert.assertEquals(refdataTemplateInfo, actualFiles.get(1));
         Assert.assertEquals(dummy2TemplateInfo, actualFiles.get(2));

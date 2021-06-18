@@ -12,11 +12,11 @@ import java.util.List;
 public abstract class BaseTransformService implements TransformService {
     @Override
     public void transform() throws TemplateMissingException {
-        persistTemplates(transformTemplates(loadTemplates(getTemplatesForTransformation())));
+        persistResultTemplates(transformTemplates(loadTemplates(getTemplatesForTransformation())));
     }
 
     public abstract List<? extends TemplateInfo> getTemplatesForTransformation() throws TemplateMissingException;
     public abstract List<? extends TemplateInfo> loadTemplates(List<? extends TemplateInfo> templates);
     public abstract List<? extends TemplateInfo> transformTemplates(List<? extends TemplateInfo> templates);
-    public abstract List<? extends TemplateInfo> persistTemplates(List<? extends TemplateInfo> templates);
+    public abstract List<? extends TemplateInfo> persistResultTemplates(List<? extends TemplateInfo> templates);
 }

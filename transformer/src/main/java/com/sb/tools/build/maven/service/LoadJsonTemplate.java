@@ -37,4 +37,8 @@ public class LoadJsonTemplate implements LoadTemplate {
             throw new JsonTemplateLoadException("Error.IOException", e.getMessage());
         }
     }
+
+    public JsonElement load(String jsonString) {
+        return JsonParser.parseString(jsonString);
+    }
 }

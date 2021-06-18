@@ -12,7 +12,7 @@ public interface ThrowingFunction<T, R, E extends Throwable> {
             try {
                 return throwingFunction.apply(f);
             } catch (Throwable e) {
-                throw new RuntimeException (e);
+                throw new RuntimeException(e);
             }
         };
     }
