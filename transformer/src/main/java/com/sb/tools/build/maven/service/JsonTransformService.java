@@ -111,12 +111,14 @@ public class JsonTransformService extends BaseTransformService {
     public List<? extends TemplateInfo> persistResultTemplates(List<? extends TemplateInfo> templates) {
         return templates.stream().map(ThrowingFunction.throwsFunctionWrapper(t -> {
             log.info("Persist Result {} to output path {}", ((JsonTemplateInfo) t).getResult(), t.getResultFile());
-            if (!Files.exists(t.getResultFile())) {
+            if (!Files.exists(t.getResultFile().getParent())) {
                 log.info("Result {} does not exist", t.getResultFile());
                 Files.createDirectory(t.getResultFile().getParent());
             }
             try (FileWriter fileWriter = new FileWriter(t.getResultFile().toString())) {
                 fileWriter.write(((JsonTemplateInfo) t).getResult().toString());
+                log.info("\r\n<----- Transformation complete \r\n found Template {} \r\n Override {} \r\n Result {} \r\n ----->",
+                        t.getTemplateFile(), t.getOverrideFile(), t.getResultFile());
             } catch (IOException e) {
                 log.error("Error.IOException could not write result for template {}", ((JsonTemplateInfo) t).getTemplateFile());
                 throw new InvalidOverrideException("Error.IOException",
