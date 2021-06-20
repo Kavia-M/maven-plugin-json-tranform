@@ -1,0 +1,14 @@
+{
+  "overrideInstructions": [{
+      "path": "$.api_definition.name",
+      "value": "Shivi"
+    },
+    {
+      "path": "$.api_definition.auth.auth_header_name",
+      "value": "authorization"
+    },
+    {
+      "path": "$.api_definition.proxy.target_url",
+      "value": "https://127.0.0.1"
+    }]
+}
