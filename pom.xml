@@ -20,6 +20,7 @@
         <module>base-template</module>
         <module>transformer</module>
         <module>transformer-test-harness</module>
+        <module>publisher</module>
     </modules>
 
     <build>

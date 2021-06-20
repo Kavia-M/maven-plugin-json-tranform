@@ -10,5 +10,27 @@
     {
       "path": "$.api_definition.proxy.target_url",
       "value": "https://127.0.0.1"
+    },
+    {
+      "path": "$.api_definition.oauth_meta",
+      "type": "object",
+      "value": "{\r\n      \"auth_login_redirect\": \"\",\r\n      \"allowed_access_types\": [],\r\n      \"allowed_authorize_types\": [\r\n        \"tokens\"\r\n      ]\r\n    }"
+    },
+    {
+      "path": "$.hook_references",
+      "type": "list",
+      "value": "{\n      \"event_name\": \"CustomEvent\",\n      \"hook\": {\n        \"api_model\": {},\n        \"id\": \"54be6c0beba6db07a6000002\",\n        \"org_id\": \"54b53d3aeba6db5c35000002\",\n        \"name\": \"Test Post\",\n        \"method\": \"POST\",\n        \"target_path\": \"http://httpbin.org/post\",\n        \"template_path\": \"\",\n        \"header_map\": {\n          \"x-tyk-test\": \"123456\"\n        },\n        \"event_timeout\": 0\n      },\n      \"event_timeout\": 60\n    }"
+    },
+    {
+      "path": "$.api_definition.version_data.versions.Default.extended_paths",
+      "type": "object",
+      "source": "file",
+      "value": "src/test/resources/target/result/extendedPath-iag-template.json"
+    },
+    {
+      "path": "$.api_definition.version_data.versions.Default.extended_paths.ignored[0].method_actions.GET.data",
+      "source": "file",
+      "value": "src/test/resources/target/result/inline-data-iag-template.json"
     }]
 }
+

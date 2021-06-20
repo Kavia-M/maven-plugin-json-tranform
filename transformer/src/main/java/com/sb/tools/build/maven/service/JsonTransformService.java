@@ -1,24 +1,33 @@
 package com.sb.tools.build.maven.service;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
+import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.sb.tools.build.maven.exceptions.InvalidOverrideException;
 import com.sb.tools.build.maven.exceptions.TemplateMissingException;
+import com.sb.tools.build.maven.exceptions.TransformMavenPluginException;
 import com.sb.tools.build.maven.model.JsonTemplateInfo;
 import com.sb.tools.build.maven.model.TemplateInfo;
 import com.sb.tools.build.maven.utils.TemplateFileMapper;
 import com.sb.tools.build.maven.utils.ThrowingFunction;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -84,16 +93,37 @@ public class JsonTransformService extends BaseTransformService {
                                 t.getTemplateFile(), t.getOverrideFile(), "$." + OVERRIDE_ROOT_OBJECT), e);
             }
 
-            String result = ((JsonTemplateInfo) t).getTemplate().toString();
+            DocumentContext context = JsonPath.parse(((JsonTemplateInfo) t).getTemplate().toString());
 
             for(Object jObj: overrideInstructions) {
+                if (((LinkedHashMap) jObj).size() < 2) {
+                    log.error("Error.OverrideInstruction malformed instruction {}. " +
+                                    "Please check contents of override file {}, root object expected to be {} ",
+                            ((LinkedHashMap) jObj), t.getTemplateFile(), t.getOverrideFile(), "$." + OVERRIDE_ROOT_OBJECT);
+                    throw new InvalidOverrideException("Error.OverrideInstruction",
+                            String.format("Error.OverrideInstruction malformed instruction %s. " +
+                                            "Please check contents of override file %s, root object expected to be %s ",
+                                    ((LinkedHashMap) jObj), t.getTemplateFile(), t.getOverrideFile(), "$." + OVERRIDE_ROOT_OBJECT));
+                }
                 String path = ((LinkedHashMap) jObj).get("path").toString();
                 String value = ((LinkedHashMap) jObj).get("value").toString();
+                Object overrideInstructionSource = ((LinkedHashMap) jObj).get("source");
+                Object overrideInstructionType = ((LinkedHashMap) jObj).get("type");
 
-                log.info("Applying override path {} with value {} to {}", path, value, result);
-                result = JsonPath.parse(result).set(path, value).jsonString();
-                log.info("Result {}", result);
+                if (!ObjectUtils.isEmpty(overrideInstructionSource)) {
+                    handleOverrideInstructionSource(context, ((LinkedHashMap) jObj), overrideInstructionSource, overrideInstructionType, path, value);
+                } else if (!ObjectUtils.isEmpty(overrideInstructionType)) {
+                    log.warn("No source information for override path {} with value {}", path, value);
+                    handleOverrideInstructionType(context, ((LinkedHashMap) jObj), overrideInstructionType, path, value);
+                } else {
+                    log.warn("No source information for override path {} with value {}", path, value);
+                    log.warn("No type information for override path {} with value {}", path, value);
+                    handlePlainValues(context, path, value);
+                }
             }
+
+            String result = context.jsonString();
+            log.info("Result {}", result);
 
             return JsonTemplateInfo.JsonTemplateInfoBuilder()
                     .name(t.getName())
@@ -105,6 +135,49 @@ public class JsonTransformService extends BaseTransformService {
                     .resultFile(t.getResultFile())
                     .build();
         })).collect(Collectors.toList());
+    }
+
+    private DocumentContext handleOverrideInstructionType(DocumentContext context, LinkedHashMap jObj, Object overrideInstructionType, String path, String value) {
+            if (!StringUtils.isEmpty(overrideInstructionType) && overrideInstructionType.equals("object")) {
+                log.info("Applying override path {} with object value {}", path, value);
+                context.set(JsonPath.compile(path), JsonPath.parse(value).json());
+            } else if (!StringUtils.isEmpty(overrideInstructionType) && overrideInstructionType.equals("list")) {
+                log.info("Applying override path {} with object value {}", path, value);
+                context.add(JsonPath.compile(path), new Gson().fromJson(value,
+                        new TypeToken<HashMap<String, Object>>() {}.getType()));
+            }
+
+        return context;
+    }
+
+    private DocumentContext handleOverrideInstructionSource(DocumentContext context, LinkedHashMap jObj,
+                                                            Object overrideInstructionSource,
+                                                            Object overrideInstructionType,
+                                                            String path, String value) throws InvalidOverrideException {
+        String source = String.valueOf(Paths.get(System.getProperty("user.dir")).resolve(value));
+        try {
+            if (!ObjectUtils.isEmpty(overrideInstructionType)) {
+                handleOverrideInstructionType(context, jObj, overrideInstructionType, path,
+                        loadTemplate.load(new File(source)).toString());
+            } else {
+                log.warn("No type information for override path {} with value {}", path, value);
+                handlePlainValues(context, path, StringEscapeUtils.escapeJson(loadTemplate.load(new File(source)).toString()));
+            }
+        } catch (TransformMavenPluginException e) {
+            log.error("OverrideInstruction Source {} does not exist", source);
+            throw new InvalidOverrideException("Error.OverrideInstruction",
+                    String.format("Error.OverrideInstruction malformed instruction %s. " +
+                                    "Override Instruction source %s, does not exist in template %s and override file %s ",
+                            jObj, overrideInstructionSource.toString()), e);
+        }
+
+        return context;
+    }
+
+    private DocumentContext handlePlainValues(DocumentContext context, String path, String value) {
+        log.info("Applying override path {} with value {}", path, value);
+        context.set(JsonPath.compile(path), value);
+        return context;
     }
 
     @Override

@@ -26,12 +26,12 @@
           "extended_paths": {
             "ignored": [
               {
-                "path": "/test-path/",
+                "path": "/test-path-workflow/",
                 "method_actions": {
                   "GET": {
                     "action": "no_action",
                     "code": 200,
-                    "data": "",
+                    "data": "{\n  \"foo\":\"bar\",\n  \"oneMoreBar\": \"oneMoreFoo\"\n}",
                     "headers": {}
                   }
                 }
@@ -62,7 +62,7 @@
       "auth_login_redirect": "",
       "allowed_access_types": [],
       "allowed_authorize_types": [
-        "token"
+        "tokens"
       ]
     },
     "notifications": {
@@ -82,6 +82,23 @@
   "hook_references": [
     {
       "event_name": "QuotaExceeded",
+      "hook": {
+        "api_model": {},
+        "id": "54be6c0beba6db07a6000002",
+        "org_id": "54b53d3aeba6db5c35000002",
+        "name": "Test Post",
+        "method": "POST",
+        "target_path": "http://httpbin.org/post",
+        "template_path": "",
+        "header_map": {
+          "x-tyk-test": "123456"
+        },
+        "event_timeout": 0
+      },
+      "event_timeout": 60
+    },
+    {
+      "event_name": "CustomEvent",
       "hook": {
         "api_model": {},
         "id": "54be6c0beba6db07a6000002",

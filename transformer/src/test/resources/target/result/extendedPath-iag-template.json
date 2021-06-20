@@ -1,0 +1,30 @@
+{
+  "ignored": [
+    {
+      "path": "/test-path-workflow/",
+      "method_actions": {
+        "GET": {
+          "action": "no_action",
+          "code": 200,
+          "data": "",
+          "headers": {}
+        }
+      }
+    },
+    {
+      "path": "/test-path/reply",
+      "method_actions": {
+        "GET": {
+          "action": "reply",
+          "code": 200,
+          "data": "{\"foo\":\"bar\"}",
+          "headers": {
+            "x-test": "test"
+          }
+        }
+      }
+    }
+  ],
+  "white_list": [],
+  "black_list": []
+}
