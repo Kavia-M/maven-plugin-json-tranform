@@ -18,6 +18,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,6 +53,7 @@ public class JsonTransformService extends BaseTransformService {
                         .name(f.getName())
                         .templateFile(f.getTemplateFile())
                         .overrideFile(f.getOverrideFile())
+                        .resultFile(f.getResultFile())
                         .template((JsonElement)loadTemplate.load(f.getTemplateFile()))
                         .override((JsonElement)loadTemplate.load(f.getOverrideFile()))
                         .build()
@@ -67,6 +69,7 @@ public class JsonTransformService extends BaseTransformService {
             try {
                 overrideInstructions = JsonPath
                         .read((((JsonTemplateInfo) t).getOverride().toString()), "$." + OVERRIDE_ROOT_OBJECT);
+                log.info("{} to be applied {}", "$." + OVERRIDE_ROOT_OBJECT, overrideInstructions);
                 if (ObjectUtils.isEmpty(overrideInstructions) || overrideInstructions.size() < 1) {
                     log.error("Error.OverrideInstruction not found for template {}", t.getTemplateFile());
                     throw new InvalidOverrideException("Error.OverrideInstruction",
@@ -86,7 +89,10 @@ public class JsonTransformService extends BaseTransformService {
             for(Object jObj: overrideInstructions) {
                 String path = ((LinkedHashMap) jObj).get("path").toString();
                 String value = ((LinkedHashMap) jObj).get("value").toString();
+
+                log.info("Applying override path {} with value {} to {}", path, value, result);
                 result = JsonPath.parse(result).set(path, value).jsonString();
+                log.info("Result {}", result);
             }
 
             return JsonTemplateInfo.JsonTemplateInfoBuilder()
@@ -104,6 +110,11 @@ public class JsonTransformService extends BaseTransformService {
     @Override
     public List<? extends TemplateInfo> persistResultTemplates(List<? extends TemplateInfo> templates) {
         return templates.stream().map(ThrowingFunction.throwsFunctionWrapper(t -> {
+            log.info("Persist Result {} to output path {}", ((JsonTemplateInfo) t).getResult(), t.getResultFile());
+            if (!Files.exists(t.getResultFile())) {
+                log.info("Result {} does not exist", t.getResultFile());
+                Files.createDirectory(t.getResultFile().getParent());
+            }
             try (FileWriter fileWriter = new FileWriter(t.getResultFile().toString())) {
                 fileWriter.write(((JsonTemplateInfo) t).getResult().toString());
             } catch (IOException e) {
@@ -111,7 +122,7 @@ public class JsonTransformService extends BaseTransformService {
                 throw new InvalidOverrideException("Error.IOException",
                         String.format("Error.IOException for template %s. " +
                                         "Please check result file %s ",
-                                ((JsonTemplateInfo) t).getTemplateFile(), ((JsonTemplateInfo) t).getResultFile()), e);
+                                t.getTemplateFile(), t.getResultFile(), e));
             }
             return JsonTemplateInfo.JsonTemplateInfoBuilder()
                     .name(t.getName())
