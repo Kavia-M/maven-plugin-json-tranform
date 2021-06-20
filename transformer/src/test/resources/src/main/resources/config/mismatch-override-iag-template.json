@@ -1,0 +1,7 @@
+{
+  "overrideInstructions": [
+    {"$.store.book[*].author": "sample"},
+    {"$.store.book[*].author": "sample"},
+    {"$.store.book[*].author": "sample"}
+  ]
+}
