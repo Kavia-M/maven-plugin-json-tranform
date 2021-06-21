@@ -49,7 +49,7 @@ public class JsonTransformServiceTest {
 
         Path targetDir = Paths.get(System.getProperty("user.dir")).resolve("src/test/resources/target/");
         File expectedResult = new File(String.valueOf(targetDir.resolve("lib/result-iag-template.json")));
-        Assert.assertEquals(loadTemplate.load(expectedResult), templateInfoList.get(0).getResult());
+        Assert.assertEquals(((JsonElement)loadTemplate.load(expectedResult)), ((JsonElement)templateInfoList.get(0).getResult()));
     }
 
     @Test

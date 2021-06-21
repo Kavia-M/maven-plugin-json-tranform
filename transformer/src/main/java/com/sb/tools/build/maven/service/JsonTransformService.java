@@ -161,7 +161,8 @@ public class JsonTransformService extends BaseTransformService {
                         loadTemplate.load(new File(source)).toString());
             } else {
                 log.warn("No type information for override path {} with value {}", path, value);
-                handlePlainValues(context, path, StringEscapeUtils.escapeJson(loadTemplate.load(new File(source)).toString()));
+                handlePlainValues(context, path,
+                        StringEscapeUtils.escapeJson(loadTemplate.load(new File(source)).toString()));
             }
         } catch (TransformMavenPluginException e) {
             log.error("OverrideInstruction Source {} does not exist", source);

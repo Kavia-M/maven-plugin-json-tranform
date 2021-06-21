@@ -31,7 +31,7 @@
                   "GET": {
                     "action": "no_action",
                     "code": 200,
-                    "data": "{\n  \"foo\":\"bar\",\n  \"oneMoreBar\": \"oneMoreFoo\"\n}",
+                    "data": "{\\\"foo\\\":\\\"bar\\\",\\\"oneMoreBar\\\":\\\"oneMoreFoo\\\"}",
                     "headers": {}
                   }
                 }
@@ -98,7 +98,7 @@
       "event_timeout": 60
     },
     {
-      "event_name": "CustomEvent",
+      "event_timeout": 60,
       "hook": {
         "api_model": {},
         "id": "54be6c0beba6db07a6000002",
@@ -112,7 +112,7 @@
         },
         "event_timeout": 0
       },
-      "event_timeout": 60
+      "event_name": "CustomEvent"
     }
   ]
 }
