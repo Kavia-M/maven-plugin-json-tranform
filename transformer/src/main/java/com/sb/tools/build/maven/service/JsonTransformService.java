@@ -15,7 +15,6 @@ import com.sb.tools.build.maven.utils.TemplateFileMapper;
 import com.sb.tools.build.maven.utils.ThrowingFunction;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -162,7 +161,7 @@ public class JsonTransformService extends BaseTransformService {
             } else {
                 log.warn("No type information for override path {} with value {}", path, value);
                 handlePlainValues(context, path,
-                        StringEscapeUtils.escapeJson(loadTemplate.load(new File(source)).toString()));
+                        loadTemplate.load(new File(source)).toString());
             }
         } catch (TransformMavenPluginException e) {
             log.error("OverrideInstruction Source {} does not exist", source);
