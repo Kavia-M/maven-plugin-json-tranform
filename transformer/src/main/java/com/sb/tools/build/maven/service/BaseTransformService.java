@@ -8,13 +8,9 @@ import com.sb.tools.build.maven.model.JsonTemplateInfo;
 import com.sb.tools.build.maven.model.TemplateInfo;
 import com.sb.tools.build.maven.utils.ThrowingFunction;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Singleton
-@Named
 public abstract class BaseTransformService implements TransformService {
 
     @Override
