@@ -197,7 +197,7 @@ public class JsonTransformService extends BaseTransformService {
                 throw new InvalidOverrideException("Error.IOException",
                         String.format("Error.IOException for template %s. " +
                                         "Please check result file %s ",
-                                t.getTemplateFile(), t.getResultFile(), e));
+                                t.getTemplateFile(), t.getResultFile()), e);
             }
             return JsonTemplateInfo.JsonTemplateInfoBuilder()
                     .name(t.getName())
