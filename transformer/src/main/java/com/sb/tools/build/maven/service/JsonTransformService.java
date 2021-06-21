@@ -36,13 +36,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public class JsonTransformService extends BaseTransformService {
 
-    private final LoadTemplate loadTemplate;
+    private final LoadJsonTemplate loadTemplate;
     private final TemplateFileMapper templateFileMapper;
 
     private final String OVERRIDE_ROOT_OBJECT = "overrideInstructions";
 
     @Inject
-    public JsonTransformService(LoadTemplate loadTemplate, TemplateFileMapper templateFileMapper) {
+    public JsonTransformService(LoadJsonTemplate loadTemplate, TemplateFileMapper templateFileMapper) {
         this.loadTemplate = loadTemplate;
         this.templateFileMapper = templateFileMapper;
     }

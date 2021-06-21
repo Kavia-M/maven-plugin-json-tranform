@@ -17,10 +17,10 @@ import javax.inject.Singleton;
 @Mojo(name="transform", defaultPhase = LifecyclePhase.INSTALL)
 public class TransformTemplateImpl extends TransformTemplate {
 
-    private final TransformService transformService;
+    private final JsonTransformService transformService;
 
     @Inject
-    public TransformTemplateImpl(TransformService transformService) {
+    public TransformTemplateImpl(JsonTransformService transformService) {
         this.transformService = transformService;
     }
 

@@ -26,9 +26,9 @@ import static org.hamcrest.CoreMatchers.isA;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JsonTransformServiceTest {
-    private LoadTemplate loadTemplate;
+    private LoadJsonTemplate loadTemplate;
     private TemplateFileMapper templateFileMapper;
-    private TransformService transformService;
+    private JsonTransformService transformService;
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
