@@ -64,8 +64,8 @@ public class JsonTransformServiceTest {
         File templateFile = new File(String.valueOf(targetDir.resolve("lib/dummy-iag-template.json")));
         File overrideFile = new File(String.valueOf(targetDir.resolve("resources/config/dummy-override-iag-template.json")));
         Path resultFile = targetDir.resolve("result/dummy-override-iag-template.json");
-        List<JsonTemplateInfo> templateInfoList = (List<JsonTemplateInfo>) ((JsonTransformService)transformService)
-                .persistResultTemplates(Arrays.asList(JsonTemplateInfo.JsonTemplateInfoBuilder()
+        Assert.assertTrue(((JsonTransformService)transformService)
+                .persistResultTemplate(JsonTemplateInfo.JsonTemplateInfoBuilder()
                         .name("Dummy")
                         .templateFile(templateFile)
                         .overrideFile(overrideFile)
@@ -73,10 +73,8 @@ public class JsonTransformServiceTest {
                         .template(loadJsonTemplate.load(templateFile))
                         .override(loadJsonTemplate.load(overrideFile))
                         .result(loadJsonTemplate.load(new File(String.valueOf(targetDir.resolve("lib/result-iag-template.json")))))
-                        .build()));
-
-        //Assert.assertTrue(resultFile.exists());
-        //Assert.assertEquals(loadTemplate.load(resultFile), templateInfoList.get(0).getResult());
+                        .build(), loadJsonTemplate.load("{\"api_definition\": {\n" +
+                        "    \"name\": \"Shivi\"}}")));
     }
 
     @Test
