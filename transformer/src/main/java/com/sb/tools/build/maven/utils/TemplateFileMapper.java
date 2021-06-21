@@ -81,8 +81,10 @@ public class TemplateFileMapper {
             if (files.size() == 0)
                 throw new TemplateMissingException("Error.TemplateNotFound", String.format("No template found at %s", templatePath));
 
+            files.sort(new TemplateInfoComparator());
             files.forEach(f -> log.info("\r\n<----- \r\n Found Template {} \r\n Override {} \r\n Result {} \r\n ----->",
                     f.getTemplateFile(), f.getOverrideFile(), f.getResultFile()));
+
             return files;
         } catch (IOException e) {
             log.error("Error while reading the directory {} due to following error {}", templatePath, e.getMessage());
