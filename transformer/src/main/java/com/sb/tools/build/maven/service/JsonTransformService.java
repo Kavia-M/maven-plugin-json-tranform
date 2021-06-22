@@ -144,6 +144,9 @@ public class JsonTransformService extends BaseTransformService {
             log.info("Applying override path {} with object value {}", path, value);
             context.add(JsonPath.compile(path), new Gson().fromJson(value,
                     new TypeToken<HashMap<String, Object>>() {}.getType()));
+        } else if (!StringUtils.isEmpty(overrideInstructionType) && overrideInstructionType.equals("list.string")) {
+            log.info("Applying override path {} with object value {}", path, value);
+            context.add(JsonPath.compile(path), value);
         }
     }
 

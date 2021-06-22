@@ -31,6 +31,16 @@
       "path": "$.api_definition.version_data.versions.Default.extended_paths.ignored[0].method_actions.GET.data",
       "source": "file",
       "value": "src/test/resources/target/result/inline-data-iag-template.json"
+    },
+    {
+      "path": "$.api_definition.allowed_ips",
+      "type": "list.string",
+      "value": "127.0.0.2"
+    },
+    {
+      "path": "$.api_definition.allowed_ips",
+      "type": "list.string",
+      "value": "127.0.0.3"
     }]
 }
 

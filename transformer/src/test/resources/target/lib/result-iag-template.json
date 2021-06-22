@@ -71,7 +71,9 @@
     },
     "enable_ip_whitelisting": true,
     "allowed_ips": [
-      "127.0.0.1"
+      "127.0.0.1",
+      "127.0.0.2",
+      "127.0.0.3"
     ],
     "use_keyless": false,
     "enable_signature_checking": false,
